@@ -2,7 +2,19 @@
 import Booking from "./bookingSchema.js";
 
 class bookingsModel {
+  generateBookingId() {
+    const now = new Date();
+    const dateStr = now.toISOString().slice(0, 10).replace(/-/g, '');
+    const randomNum = Math.floor(Math.random() * 9999).toString().padStart(4, '0');
+    return `bkg_${dateStr}_${randomNum}`;
+  }
+
   async create(data) {
+    // Generar ID único si no se proporciona
+    if (!data._id) {
+      data._id = this.generateBookingId();
+    }
+    
     const booking = new Booking(data);
     return await booking.save();
   }
@@ -16,7 +28,7 @@ class bookingsModel {
   }
 
   async getByUserId(user_id) {
-    return await Booking.find({ user_id });
+    return await Booking.find({ "user.user_id": user_id });
   }
 
   async updateStatus(id, newStatus) {
@@ -33,45 +45,74 @@ class bookingsModel {
 
   async getActiveByUser(user_id) {
     return await Booking.find({ 
-      user_id, 
-      status: { $ne: "cancelled" } 
+      "user.user_id": user_id, 
+      status: { $nin: ["CANCELLED", "REFUNDED"] } 
     });
   }
 
-  async checkSeatAvailability(theater_id, show_time, seats) {
+  async checkSeatAvailability(showtime_id, cinema_id, sala_id, seats) {
     const existingBookings = await Booking.find({
-      theater_id,
-      show_time: {
-        $gte: new Date(show_time.getTime() - 2 * 60 * 60 * 1000), // 2 horas antes
-        $lte: new Date(show_time.getTime() + 2 * 60 * 60 * 1000)  // 2 horas después
-      },
-      status: "confirmed"
+      showtime_id,
+      cinema_id,
+      sala_id,
+      status: { $in: ["CONFIRMED", "HOLD"] }
     });
 
     const occupiedSeats = new Set();
     existingBookings.forEach(booking => {
-      booking.seats.forEach(seat => occupiedSeats.add(seat));
+      booking.seats.forEach(seat => {
+        occupiedSeats.add(`${seat.seat_row}${seat.seat_number}`);
+      });
     });
 
-    return seats.filter(seat => !occupiedSeats.has(seat));
+    return seats.filter(seat => {
+      const seatKey = `${seat.seat_row}${seat.seat_number}`;
+      return !occupiedSeats.has(seatKey);
+    });
   }
 
-  async createHold(user_id, film_id, theater_id, seats, show_time) {
-    const availableSeats = await this.checkSeatAvailability(theater_id, show_time, seats);
+  async createHold(showtime_id, movie_id, cinema_id, sala_id, sala_number, seats, user, payment_method, source, price_total) {
+    const availableSeats = await this.checkSeatAvailability(showtime_id, cinema_id, sala_id, seats);
     if (availableSeats.length === 0) {
       throw new Error("No hay asientos disponibles");
     }
 
-    const hold = new Booking({
-      user_id,
-      film_id,
-      theater_id,
+    const holdData = {
+      showtime_id,
+      movie_id,
+      cinema_id,
+      sala_id,
+      sala_number,
       seats: availableSeats,
-      show_time,
-      status: "hold"
-    });
+      user,
+      payment_method,
+      source,
+      price_total,
+      currency: "PEN",
+      status: "HOLD"
+    };
 
-    return await hold.save();
+    return await this.create(holdData);
+  }
+
+  async confirmHold(hold_id) {
+    return await this.updateStatus(hold_id, "CONFIRMED");
+  }
+
+  async cancelBooking(booking_id) {
+    return await this.updateStatus(booking_id, "CANCELLED");
+  }
+
+  async refundBooking(booking_id) {
+    return await this.updateStatus(booking_id, "REFUNDED");
+  }
+
+  async getByShowtime(showtime_id) {
+    return await Booking.find({ showtime_id });
+  }
+
+  async getByCinema(cinema_id) {
+    return await Booking.find({ cinema_id });
   }
 }
 

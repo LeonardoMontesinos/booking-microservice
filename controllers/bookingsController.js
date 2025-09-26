@@ -59,6 +59,91 @@ class bookingsController {
       res.status(500).json({ error: e.message });
     }
   }
+
+  // Nuevos métodos para la especificación
+  async createHold(req, res) {
+    try {
+      const { 
+        showtime_id, 
+        movie_id, 
+        cinema_id, 
+        sala_id, 
+        sala_number, 
+        seats, 
+        user, 
+        payment_method, 
+        source, 
+        price_total 
+      } = req.body;
+
+      const hold = await bookingsModel.createHold(
+        showtime_id, 
+        movie_id, 
+        cinema_id, 
+        sala_id, 
+        sala_number, 
+        seats, 
+        user, 
+        payment_method, 
+        source, 
+        price_total
+      );
+      
+      res.status(201).json(hold);
+    } catch (e) {
+      console.error("ERROR EN POST /holds:", e);
+      res.status(400).json({ error: e.message });
+    }
+  }
+
+  async confirmHold(req, res) {
+    try {
+      const { hold_id } = req.body;
+      const confirmed = await bookingsModel.confirmHold(hold_id);
+      if (!confirmed) return res.status(404).json({ error: "Hold no encontrado" });
+      res.json(confirmed);
+    } catch (e) {
+      res.status(500).json({ error: e.message });
+    }
+  }
+
+  async cancelBooking(req, res) {
+    try {
+      const cancelled = await bookingsModel.cancelBooking(req.params.id);
+      if (!cancelled) return res.status(404).json({ error: "Reserva no encontrada" });
+      res.json(cancelled);
+    } catch (e) {
+      res.status(500).json({ error: e.message });
+    }
+  }
+
+  async refundBooking(req, res) {
+    try {
+      const refunded = await bookingsModel.refundBooking(req.params.id);
+      if (!refunded) return res.status(404).json({ error: "Reserva no encontrada" });
+      res.json(refunded);
+    } catch (e) {
+      res.status(500).json({ error: e.message });
+    }
+  }
+
+  async getByShowtime(req, res) {
+    try {
+      const data = await bookingsModel.getByShowtime(req.params.showtime_id);
+      res.json(data);
+    } catch (e) {
+      res.status(500).json({ error: e.message });
+    }
+  }
+
+  async getByCinema(req, res) {
+    try {
+      const data = await bookingsModel.getByCinema(req.params.cinema_id);
+      res.json(data);
+    } catch (e) {
+      res.status(500).json({ error: e.message });
+    }
+  }
 }
 
 export default new bookingsController();
