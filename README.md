@@ -30,7 +30,7 @@ API2_URL=http://localhost:8000
 ```
 
 ### 4) Cargar datos de ejemplo
-Ejecuta solo si tienes las APIs externas configuradas (users y trips):
+Ejecuta solo si tienes las APIs externas configuradas:
 ```bash
 node seed.js
 ```
