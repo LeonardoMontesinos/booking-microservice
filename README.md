@@ -112,5 +112,5 @@ curl -s http://localhost:3000/bookings/user/u1/active
 
 ### 7) Solución de problemas
 - Error de conexión a Mongo: verifica que el contenedor esté corriendo y la variable `MONGO_URI` apunte a `mongodb://localhost:27017/bookingdb`.
-- Seed falla: probablemente por falta de APIs externas. Omite el seed y crea datos con cURL.
+- Seed falla: probablemente por la falta de APIs externas. Omite la ejecucion del seed y crea datos con los comandos cURL presentados anteriormente.
 - Puerto en uso: cambia `PORT` en `.env`.
