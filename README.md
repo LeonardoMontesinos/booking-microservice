@@ -29,7 +29,7 @@ API1_URL=http://localhost:8080
 API2_URL=http://localhost:8000
 ```
 
-### 4) (Opcional) Cargar datos de ejemplo
+### 4) Cargar datos de ejemplo
 Ejecuta solo si tienes las APIs externas configuradas (users y trips):
 ```bash
 node seed.js
