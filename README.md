@@ -6,7 +6,9 @@
 
 ### 1) Clonar e instalar dependencias
 ```bash
-cd /home/leo/CloudMSProject && npm i
+git clone git@github.com:LeonardoMontesinos/booking-microservice.git
+cd /booking-microservices
+npm i
 ```
 
 ### 2) Levantar MongoDB con Docker
