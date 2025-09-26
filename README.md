@@ -24,7 +24,7 @@ Crear un archivo `.env` en la raíz del proyecto con:
 ```bash
 PORT=3000
 MONGO_URI=mongodb://localhost:27017/bookingdb
-# Opcionales para seed si tienes otras APIs
+# Para darle al seed acceso a otras APIs
 API1_URL=http://localhost:8080
 API2_URL=http://localhost:8000
 ```
