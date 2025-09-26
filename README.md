@@ -7,7 +7,7 @@
 ### 1) Clonar e instalar dependencias
 ```bash
 git clone git@github.com:LeonardoMontesinos/booking-microservice.git
-cd /booking-microservices
+cd booking-microservices/
 npm i
 ```
 
