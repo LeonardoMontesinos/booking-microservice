@@ -44,7 +44,9 @@ node app.js
 
 Deberías ver en consola algo como: "Servidor activo en el puerto 3000".
 
-### 6) Probar con cURL
+### Probar con cURL
+
+En caso no tengas configuradas las apis externas, usa los siguientes comandos cURL para probar el acceso a la base de datos de mongodb
 
 Base URL: `http://localhost:3000`
 
