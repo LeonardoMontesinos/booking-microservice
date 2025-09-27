@@ -44,7 +44,20 @@ Si no tienes esas APIs, salta este paso y crea datos con los endpoints vía cURL
 node app.js
 ```
 
-Deberías ver en consola algo como: "Servidor activo en el puerto 3000".
+Deberías ver en consola:
+- "🚀 Servidor activo en el puerto 3000"
+- "📚 Documentación Swagger: http://localhost:3000/api-docs"
+
+### 6) Acceder a la documentación Swagger
+Abre tu navegador y ve a: **http://localhost:3000/api-docs**
+
+La documentación interactiva incluye:
+- ✅ Todos los endpoints documentados
+- ✅ Esquemas de datos completos
+- ✅ Ejemplos de request/response
+- ✅ Pruebas interactivas desde el navegador
+- ✅ Códigos de estado HTTP
+- ✅ Validaciones de datos
 
 ### Probar con cURL
 
@@ -112,7 +125,29 @@ curl -s -X PUT http://localhost:3000/bookings/<ID> \
 curl -s http://localhost:3000/bookings/user/u1/active
 ```
 
-### 7) Solución de problemas
-- Error de conexión a Mongo: verifica que el contenedor esté corriendo y la variable `MONGO_URI` apunte a `mongodb://localhost:27017/bookingdb`.
-- Seed falla: probablemente por la falta de APIs externas. Omite la ejecucion del seed y crea datos con los comandos cURL presentados anteriormente.
-- Puerto en uso: cambia `PORT` en `.env`.
+### 7) Lista completa de endpoints
+
+#### 📋 **Endpoints CRUD Básicos**
+- `POST /bookings` - Crear nueva reserva
+- `GET /bookings` - Obtener todas las reservas
+- `GET /bookings/:id` - Obtener reserva por ID
+- `PUT /bookings/:id` - Actualizar estado de reserva
+- `DELETE /bookings/:id` - Eliminar reserva
+
+#### 🎫 **Endpoints de Boletería**
+- `POST /bookings/holds` - Crear hold temporal de asientos
+- `POST /bookings/reservations` - Confirmar hold como reserva
+- `GET /bookings/reservations/:id` - Obtener reserva por ID
+- `POST /bookings/reservations/:id/cancel` - Cancelar reserva
+- `POST /bookings/reservations/:id/refund` - Reembolsar reserva
+
+#### 🔍 **Endpoints de Consulta**
+- `GET /bookings/user/:user_id/active` - Reservas activas por usuario
+- `GET /bookings/showtime/:showtime_id` - Reservas por showtime
+- `GET /bookings/cinema/:cinema_id` - Reservas por cinema
+
+### 8) Solución de problemas
+- **Error de conexión a Mongo**: verifica que el contenedor esté corriendo y la variable `MONGO_URI` apunte a `mongodb://localhost:27017/bookingdb`.
+- **Seed falla**: probablemente por falta de APIs externas. Omite el seed y crea datos con cURL.
+- **Puerto en uso**: cambia `PORT` en `.env`.
+- **Swagger no carga**: verifica que el servidor esté corriendo y accede a `http://localhost:3000/api-docs`.
